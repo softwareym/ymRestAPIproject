@@ -1,0 +1,1 @@
+INSERT INTO sprinkle (a, b, c, d, e) VALUES ('B','ym3','2020-01-01','1,2,3,4',0);
