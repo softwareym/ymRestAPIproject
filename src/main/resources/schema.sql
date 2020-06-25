@@ -1,22 +1,26 @@
-/*
-서버 시작시 스프링에서 자동생성
-schema.sql – (DDL) 스키마를 초기화할때 (예 : 테이블 및 종속성 생성).
-data.sql – (DML)
-*/
-DROP TABLE IF EXISTS sprinkle;
 
-CREATE TABLE  sprinkle( conSeq INT PRIMARY KEY AUTO_INCREMENT
-, a VARCHAR
-, b VARCHAR
-, c DATE
-, d VARCHAR
-, e INT
-, f TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-, g TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+DROP TABLE IF EXISTS tblSprinkle;
+DROP TABLE IF EXISTS tblReceivers;
+
+CREATE TABLE tblSprinkle(
+   seq LONG PRIMARY KEY AUTO_INCREMENT
+  , token VARCHAR(3) NOT NULL
+  , sprinklerId VARCHAR NOT NULL
+  , sprinklerPrice LONG NOT NULL
+  , receiverCnt INT NOT NULL
+  , regDate TIMESTAMP NOT NULL
 );
 
+CREATE TABLE tblReceivers(
+   dtlSeq LONG PRIMARY KEY AUTO_INCREMENT
+  , token VARCHAR(3) NOT NULL
+  , receiverOrder INT NOT NULL
+  , receiverId VARCHAR NOT NULL
+  , receiverPrice LONG NOT NULL
+  , receiveDate TIMESTAMP NOT NULL
+);
 
-INSERT INTO sprinkle (a, b, c, d, e) VALUES ('B','ym',now(),'1,2,3,',0);
-INSERT INTO sprinkle (a, b, c, d, e) VALUES ('B','ym',now(),'5,6,',0);
-INSERT INTO sprinkle (a, b, c, d, e) VALUES ('C','ym2',now(),'9,10',0);
-INSERT INTO sprinkle (a, b, c, d, e) VALUES ('B','ym2','2019-11-24','1,2,3,4',0);
+ALTER TABLE tblReceivers
+ADD FOREIGN KEY (token)
+REFERENCES tblSprinkle(token);
+

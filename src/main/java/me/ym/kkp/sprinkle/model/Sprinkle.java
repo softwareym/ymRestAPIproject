@@ -8,13 +8,19 @@ import java.sql.Timestamp;
 @Data
 @Alias("sprinkle")
 public class Sprinkle {
-    private Long conSeq;
-    private String conName;
-    private String conUser;
-    private String conDate;
-    private String conTime;
-    private int isRepeat;
-    private Timestamp createdAt;
-    private Timestamp updateAt;
+
+    private Long seq;
+    private String token;
+    private String sprinklerId;
+    private Long sprinklerPrice;
+    private int receiverCnt;
+    private Timestamp regDate;
+
+
+    private Long dtlSeq;
+    private int receiverOrder;
+    private String receiverId;
+    private Long receiverPrice;
+    private Timestamp receiveDate;
 
 }
