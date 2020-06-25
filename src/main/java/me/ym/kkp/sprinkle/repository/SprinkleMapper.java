@@ -9,7 +9,9 @@ import java.util.List;
 @Repository
 public interface SprinkleMapper {
 
-    List<Sprinkle> selectAllSprinkle();
+    List<Sprinkle> selectMySprinkle();
+    List<Sprinkle> selectMyReceiver();
+
 //    int insertMeeting(Meeting conference);
 /*    List<Meeting> selectConTimeByConDate(ConferenceDto conferenceDto);*/
 

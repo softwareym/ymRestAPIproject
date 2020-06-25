@@ -17,8 +17,13 @@ public class SprinkleService {
     @Autowired
     SprinkleMapper sprinkleMapper;
 
-    public List<Sprinkle> selectAllSprinkle(){
-        return sprinkleMapper.selectAllSprinkle();
+    public List<Sprinkle> selectMySprinkle(){
+        return sprinkleMapper.selectMySprinkle();
     }
+    public List<Sprinkle> selectMyReceiver() {
+        return sprinkleMapper.selectMyReceiver();
+    }
+
+
 
 }

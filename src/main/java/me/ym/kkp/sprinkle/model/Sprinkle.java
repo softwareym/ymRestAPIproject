@@ -11,7 +11,8 @@ public class Sprinkle {
 
     private Long seq;
     private String token;
-    private String sprinklerId;
+    private String roomId;
+    private int sprinklerId;
     private Long sprinklerPrice;
     private int receiverCnt;
     private Timestamp regDate;
@@ -19,8 +20,9 @@ public class Sprinkle {
 
     private Long dtlSeq;
     private int receiverOrder;
-    private String receiverId;
+    private int receiverId;
     private Long receiverPrice;
     private Timestamp receiveDate;
+    private Long receiverTotPrice;
 
 }

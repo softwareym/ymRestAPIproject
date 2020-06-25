@@ -21,7 +21,7 @@ public class SprinkleController {
     private SprinkleMapper sprinkleMapper;
 
     @GetMapping("/all")
-    public Object getAllMeetInfo(){
-        return sprinkleMapper.selectAllSprinkle();
+    public Object selectMySprinkle(){
+        return sprinkleMapper.selectMySprinkle();
     }
 }
