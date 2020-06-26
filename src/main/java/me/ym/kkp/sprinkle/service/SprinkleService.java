@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -17,11 +18,12 @@ public class SprinkleService {
     @Autowired
     SprinkleMapper sprinkleMapper;
 
-    public List<Sprinkle> selectMySprinkle(){
-        return sprinkleMapper.selectMySprinkle();
+    public Sprinkle selectMySprinkle(String token){
+        return sprinkleMapper.selectMySprinkle(token);
     }
-    public List<Sprinkle> selectMyReceiver() {
-        return sprinkleMapper.selectMyReceiver();
+
+    public List<HashMap<String,Object>> selectMyReceiver(String token) {
+        return sprinkleMapper.selectMyReceiver(token);
     }
 
 

@@ -9,7 +9,8 @@ CREATE TABLE tblSprinkle(
   , sprinklerId INT NOT NULL
   , sprinklerPrice LONG NOT NULL
   , receiverCnt INT NOT NULL
-  , regDate TIMESTAMP NOT NULL
+  , regDate DATE NOT NULL
+  , validTime DATE NOT NULL
 );
 
 CREATE TABLE tblReceivers(
@@ -18,7 +19,7 @@ CREATE TABLE tblReceivers(
   , receiverOrder INT NOT NULL
   , receiverId INT NOT NULL
   , receiverPrice LONG NOT NULL
-  , receiveDate TIMESTAMP NOT NULL
+  , receiveDate DATE NOT NULL
 );
 
 ALTER TABLE tblReceivers
