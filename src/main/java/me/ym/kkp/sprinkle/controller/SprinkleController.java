@@ -67,7 +67,7 @@ public class SprinkleController {
                                    @RequestHeader("X-ROOM-ID") String roomId,
                                    @RequestHeader("token") String token ) throws Exception{
 
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(); //
         Sprinkle sprinkle = sprinkleService.selectMySprinkle(token);
 
         if(sprinkle != null){
