@@ -12,8 +12,8 @@ public interface SprinkleMapper {
 
     Sprinkle selectMySprinkle(String token);
     List<HashMap<String,Object>> selectMyReceiver(String token);
-
-//    int insertMeeting(Meeting conference);
-/*    List<Meeting> selectConTimeByConDate(ConferenceDto conferenceDto);*/
+    void insertSprinkle(Sprinkle sprinkle);
+    void insertReceiver(Sprinkle sprinkle);
+    HashMap<String,Object> selectSprinkleTotPrice(Sprinkle sprinkle);
 
 }

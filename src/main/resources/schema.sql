@@ -7,7 +7,7 @@ CREATE TABLE tblSprinkle(
   , token VARCHAR(3) NOT NULL
   , roomId VARCHAR NOT NULL
   , sprinklerId INT NOT NULL
-  , sprinklerPrice LONG NOT NULL
+  , sprinklerPrice INT NOT NULL
   , receiverCnt INT NOT NULL
   , regDate DATE NOT NULL
   , validTime DATE NOT NULL
@@ -16,9 +16,8 @@ CREATE TABLE tblSprinkle(
 CREATE TABLE tblReceivers(
    dtlSeq LONG PRIMARY KEY AUTO_INCREMENT
   , token VARCHAR(3) NOT NULL
-  , receiverOrder INT NOT NULL
   , receiverId INT NOT NULL
-  , receiverPrice LONG NOT NULL
+  , receiverPrice INT NOT NULL
   , receiveDate DATE NOT NULL
 );
 

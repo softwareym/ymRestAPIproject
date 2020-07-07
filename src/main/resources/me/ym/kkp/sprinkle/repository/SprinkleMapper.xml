@@ -5,15 +5,8 @@
 
 <mapper namespace="me.ym.kkp.sprinkle.repository.SprinkleMapper">
 
-    <!--3. 조회 API ● 다음 조건을 만족하는 조회 API를 만들어 주세요.
-    ○ 뿌리기 시 발급된 token을 요청값으로 받습니다.
-    ○ token에 해당하는 뿌리기 건의 현재 상태를 응답값으로 내려줍니다. 현재 상태는 다음의 정보를 포함합니다.
-    ○ 뿌린 시각, 뿌린 금액, 받기 완료된 금액,
-       받기 완료된 정보 ([받은 금액, 받은 사용자 아이디] 리스트) =>
-    ○ 뿌린 사람 자신만 조회를 할 수 있습니다.     다른사람의 뿌리기건이나 유효하지 않은 token에 대해서는 조회 실패 응답이 내려가야 합니다.
-    ○ 뿌린 건에 대한 조회는 7일 동안 할 수 있습니다.  -->
     <!-- 뿌리기 조회 -->
-    <select id="selectMySprinkle" resultType="Sprinkle" parameterType="String">
+    <select id="selectMySprinkle" resultType="sprinkle" parameterType="String">
        select
          M.seq , M.token, M.roomId, M.sprinklerId, M.sprinklerPrice, M.regDate, D.sum(receiverPrice) as receiverTotPrice, DATEADD('DAY',7, regDate) as validEndDate
         from tblSprinkle M
@@ -31,11 +24,34 @@
         where token = #{token}
     </select>
 
-    <insert id="insertSprinkle">
+    <!--VO / DTO 이용할 경우 parameterType에 별칭을 사용하거나 패키지명~클래스명 사용-->
+    <!--뿌리기 mst 생성-->
+    <insert id="insertSprinkle" parameterType="sprinkle">
 		INSERT INTO tblSprinkle (
 			token, roomId, sprinklerId, sprinklerPrice, receiverCnt, regDate, validTime
 		) VALUES (#{token},#{roomId}, #{sprinklerId},#{sprinklerPrice}, #{receiverCnt}, now(), #{validTime})
 	</insert>
+
+    <!--받기 시 id, 전체금액 조회 -->
+    <select id="selectSprinkleTotPrice" resultType="java.util.HashMap" parameterType="sprinkle">
+        select
+          sprinklerId, sprinklerPrice, receiverCnt,
+          (select count(*) from tblReceivers D where D.token =  #{token} and receiverId = #{receiverId}) as myIdCnt,
+          (case when (select count(*) from tblReceivers D where D.token =  #{token}) > 0 then (select sum(isnull(receiverPrice,0)) from tblReceivers D where D.token = #{token}) else 0 end ) as receiverTotPrice,
+          (select count(*) from tblReceivers D where D.token = #{token}) as receiverRealCnt
+        from tblSprinkle M
+        where M.token = #{token}
+    </select>
+
+
+    <!--받기 생성-->
+    <insert id="insertReceiver" parameterType="sprinkle">
+		INSERT INTO tblReceivers (
+			token, receiverId, receiverPrice, receiveDate
+		) VALUES (#{token}, #{receiverId},#{receiverPrice}, now())
+	</insert>
+
+
 
 
 </mapper>
