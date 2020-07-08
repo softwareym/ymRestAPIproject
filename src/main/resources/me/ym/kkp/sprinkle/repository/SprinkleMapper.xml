@@ -12,7 +12,7 @@
         from tblSprinkle M
         left outer join tblReceivers D
         on M.token  = D.token
-        where M.token = #{token}
+        where M.token = #{token} and deleteYn = 'N'
         group by M.seq, M.token, M.roomId, M.sprinklerId, M.sprinklerPrice
     </select>
 
@@ -21,28 +21,27 @@
        select
          receiverOrder, receiverId, receiverPrice, receiveDate
         from tblReceivers
-        where token = #{token}
+        where token = #{token} and deleteYn = 'N'
     </select>
 
     <!--VO / DTO 이용할 경우 parameterType에 별칭을 사용하거나 패키지명~클래스명 사용-->
     <!--뿌리기 mst 생성-->
     <insert id="insertSprinkle" parameterType="sprinkle">
 		INSERT INTO tblSprinkle (
-			token, roomId, sprinklerId, sprinklerPrice, receiverCnt, regDate, validTime
-		) VALUES (#{token},#{roomId}, #{sprinklerId},#{sprinklerPrice}, #{receiverCnt}, now(), #{validTime})
+			token, roomId, sprinklerId, sprinklerPrice, receiverCnt, regDate, validTime, deleteYn
+		) VALUES (#{token},#{roomId}, #{sprinklerId},#{sprinklerPrice}, #{receiverCnt}, now(), #{validTime}, 'N')
 	</insert>
 
     <!--받기 시 id, 전체금액 조회 -->
     <select id="selectSprinkleTotPrice" resultType="java.util.HashMap" parameterType="sprinkle">
         select
-          sprinklerId, sprinklerPrice, receiverCnt,
+          sprinklerId, sprinklerPrice, receiverCnt, validTime,
           (select count(*) from tblReceivers D where D.token =  #{token} and receiverId = #{receiverId}) as myIdCnt,
           (case when (select count(*) from tblReceivers D where D.token =  #{token}) > 0 then (select sum(isnull(receiverPrice,0)) from tblReceivers D where D.token = #{token}) else 0 end ) as receiverTotPrice,
           (select count(*) from tblReceivers D where D.token = #{token}) as receiverRealCnt
         from tblSprinkle M
-        where M.token = #{token}
+        where M.token = #{token} and deleteYn = 'N'
     </select>
-
 
     <!--받기 생성-->
     <insert id="insertReceiver" parameterType="sprinkle">
@@ -50,6 +49,15 @@
 			token, receiverId, receiverPrice, receiveDate
 		) VALUES (#{token}, #{receiverId},#{receiverPrice}, now())
 	</insert>
+
+    <!--뿌리기 취소-->
+    <update id="cancleSprinkle" parameterType="sprinkle">
+        UPDATE tblSprinkle
+        SET
+          deleteYn = 'Y'
+        WHERE token = #{token} and sprinklerId = #{sprinklerId} and deleteYn = 'N'
+    </update>
+
 
 
 

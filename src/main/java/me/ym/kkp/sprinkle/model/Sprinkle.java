@@ -22,6 +22,7 @@ public class Sprinkle {
     private int receiverCnt;
     private Date regDate;
     private Date validTime;
+    private String deleteYn;
 
     private int receiverTotPrice;
 

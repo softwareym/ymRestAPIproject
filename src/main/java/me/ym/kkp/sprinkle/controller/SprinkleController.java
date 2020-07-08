@@ -71,6 +71,8 @@ public class SprinkleController {
 
         //HttpStatus.CREATED : 201 [자원생성이 정상적으로 이루어 졌다.]
         //ResponseEntity 는 status field를 가지기 때문에 상태코드는 필수적으로 리턴해줘야 한다.
+        //ResponseEntity를 사용하여 반환되는 Response의 Header의 HTTP Status Code를 직접 제어할 수 있다.
+        //body()에 담겨질 객체는 Json 또는 Xml Format으로 Return 됨
         return new ResponseEntity<>(new Response("sprinkle", resultData), HttpStatus.CREATED);
     }
 
@@ -93,7 +95,7 @@ public class SprinkleController {
         //랜덤 금액 만들기
         int receiverPrice = sprinkleService.makeRandomReceivePrice(sp);
         sp.setReceiverPrice(receiverPrice);
-        sprinkleMapper.insertReceiver(sp);
+    //    sprinkleMapper.insertReceiver(sp);
 
         Map<String, Object> resultData = new HashMap<>();
         resultData.put("token", token);                         //고유키
@@ -156,6 +158,39 @@ public class SprinkleController {
         }
 
         return map;
+    }
+
+    /**
+     ***** PUT이 해당 자원의 전체를 교체하는 의미를 지니는 대신, PATCH는 일부를 변경한다는 의미를 지니기 때문에 최근 update 이벤트에서 PUT보다 더 의미적으로 적합하다고 평가받고 있다
+     *
+     * 뿌리기 취소 (PATH)
+     * @param sprinklerId
+     * @param roomId
+     * @param token
+     * @return
+     * @throws Exception
+     **/
+    @PatchMapping(value="cancle")
+    public ResponseEntity<Response> cancle(@RequestHeader("X-USER-ID") int sprinklerId,
+                                            @RequestHeader("X-ROOM-ID") String roomId,
+                                            @RequestHeader("token") String token
+                                             )throws Exception{
+        Sprinkle sp = new Sprinkle();
+        sp.setToken(token);
+        sp.setSprinklerId(sprinklerId);
+
+        int ret = sprinkleService.cancleSprinkle(sp);
+
+        if(ret == 0){                   // insert, update, delete에는 resultType이 없고 row 개수 반환하는데 수정 할수 있는 조건이 없을 경우
+            throw new Exception();      //todo 잘못된 sprinklerId 전송
+        }
+
+        Map<String, Object> resultData = new HashMap<>();
+        resultData.put("token", token);                         //고유키
+        resultData.put("X-USER-ID", sprinklerId);
+        resultData.put("X-ROOM-ID", roomId);
+
+        return new ResponseEntity<>(new Response("cancle", resultData), HttpStatus.OK);
     }
 
 

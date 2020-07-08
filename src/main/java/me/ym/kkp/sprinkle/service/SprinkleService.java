@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -36,6 +35,28 @@ public class SprinkleService {
         int returnPrice=0;
 
         HashMap<String,Object> retmap = sprinkleMapper.selectSprinkleTotPrice(sprinkle);
+
+        if(retmap == null){
+            throw new Exception();      //todo 잘못된 토큰 전송
+        }
+
+        //만료시간
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date validTime = formatter.parse(String.valueOf(retmap.get("validTime")));
+        Calendar getValidTime = Calendar.getInstance();
+        getValidTime.setTime(validTime);
+
+        //현재시간
+        Calendar curtime = Calendar.getInstance();
+        curtime.setTime(new Date());
+
+        long difference = (curtime.getTimeInMillis() - getValidTime.getTimeInMillis())/1000;
+
+        if(difference > 0){
+//            System.out.println("(curtime)부터 (getValidTime)까지 " + difference +"초가 지났습니다");
+            // 1일 = 24 * 60 * 60
+            throw new Exception(); //todo 받기한 시간이 유효 토큰 만료시간 초과
+        }
 
         if(retmap.get("sprinklerId").equals(sprinkle.getReceiverId())){
             throw new Exception();  //todo 자신이 뿌린 건은 받기 불가
@@ -70,4 +91,7 @@ public class SprinkleService {
         return returnPrice;
     }
 
+    public int cancleSprinkle(Sprinkle sprinkle){
+        return sprinkleMapper.cancleSprinkle(sprinkle);
+    }
 }

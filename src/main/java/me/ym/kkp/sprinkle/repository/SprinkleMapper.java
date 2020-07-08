@@ -15,5 +15,5 @@ public interface SprinkleMapper {
     void insertSprinkle(Sprinkle sprinkle);
     void insertReceiver(Sprinkle sprinkle);
     HashMap<String,Object> selectSprinkleTotPrice(Sprinkle sprinkle);
-
+    int cancleSprinkle(Sprinkle sprinkle);
 }
