@@ -19,9 +19,9 @@
     <!-- 뿌리기 조회 [받는사람 정보 리스트]-->
     <select id="selectMyReceiver" resultType="java.util.HashMap" parameterType="String">
        select
-         receiverOrder, receiverId, receiverPrice, receiveDate
+         receiverId, receiverPrice, receiveDate
         from tblReceivers
-        where token = #{token} and deleteYn = 'N'
+        where token = #{token}
     </select>
 
     <!--VO / DTO 이용할 경우 parameterType에 별칭을 사용하거나 패키지명~클래스명 사용-->
@@ -58,8 +58,19 @@
         WHERE token = #{token} and sprinklerId = #{sprinklerId} and deleteYn = 'N'
     </update>
 
+    <update id="changeReceivers" parameterType="sprinkle">
+        UPDATE tblReceivers
+        SET
+          token = #{newToken},
+          receiverId = #{receiverId},
+          receiverPrice = #{receiverPrice},
+          receiveDate = now()
+        WHERE token = #{token}
+    </update>
 
-
-
+    <update id="deleteSprinkle" parameterType="String">
+        DELETE FROM tblSprinkle
+        WHERE token = #{token}
+    </update>
 
 </mapper>

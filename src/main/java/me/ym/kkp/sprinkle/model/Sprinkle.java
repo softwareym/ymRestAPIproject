@@ -15,6 +15,7 @@ import java.util.Date;
 public class Sprinkle {
 
     private int seq;
+    private String newToken;
     private String token;
     private String roomId;
     private int sprinklerId;

@@ -89,12 +89,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Invalid HTTP method: PATCH 등 rest api 사용 시 필요-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+
         <!--빈번한 변경으로 인한 개발상의 번거로움(서버 재가동, 사이트 확인시 reload)을 줄여주는 개발 환경 개선 도구. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+
     </dependencies>
 
     <build>

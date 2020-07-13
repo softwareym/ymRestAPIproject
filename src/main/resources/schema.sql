@@ -22,7 +22,9 @@ CREATE TABLE tblReceivers(
   , receiveDate timestamp NOT NULL
 );
 
+/*
+put test로 제외시킴
 ALTER TABLE tblReceivers
 ADD FOREIGN KEY (token)
 REFERENCES tblSprinkle(token);
-
+*/

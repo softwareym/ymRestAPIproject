@@ -19,7 +19,7 @@ import java.util.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class SprinkleController {
 
     @Autowired
@@ -83,7 +83,7 @@ public class SprinkleController {
      * @param token
      * @return
      */
-    @PostMapping(value="recieve")
+    @PostMapping(value="recieve", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Response> recieve(@RequestHeader("X-USER-ID") int receiverId,
                                             @RequestHeader("X-ROOM-ID") String roomId,
                                             @RequestHeader("token") String token
@@ -163,7 +163,7 @@ public class SprinkleController {
     /**
      ***** PUT이 해당 자원의 전체를 교체하는 의미를 지니는 대신, PATCH는 일부를 변경한다는 의미를 지니기 때문에 최근 update 이벤트에서 PUT보다 더 의미적으로 적합하다고 평가받고 있다
      *
-     * 뿌리기 취소 (PATH)
+     * 뿌리기 취소 (PATCH)
      * @param sprinklerId
      * @param roomId
      * @param token
@@ -189,9 +189,53 @@ public class SprinkleController {
         resultData.put("token", token);                         //고유키
         resultData.put("X-USER-ID", sprinklerId);
         resultData.put("X-ROOM-ID", roomId);
-
         return new ResponseEntity<>(new Response("cancle", resultData), HttpStatus.OK);
+
     }
 
+    @PatchMapping(value="cancle2")
+    public int cancle2(@RequestHeader("X-USER-ID") int sprinklerId,
+                       @RequestHeader("X-ROOM-ID") String roomId,
+                       @RequestHeader("token") String token
+                      )throws Exception{
+        Sprinkle sp = new Sprinkle();
+        sp.setToken(token);
+        sp.setSprinklerId(sprinklerId);
+
+        int ret = sprinkleService.cancleSprinkle(sp);
+        return ret;
+    }
+
+    /**
+     * put : 요청받은 새로운 토큰으로 tblReceivers 전체 업데이트
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    @PutMapping(value="updateAllReceiver", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public int updateAllReceiver(@RequestHeader("token") String token,
+                                 @RequestBody HashMap<String, Object> reqBody
+                            )throws Exception {
+        Sprinkle sp = new Sprinkle();
+        sp.setToken(token);
+        sp.setNewToken((String) reqBody.get("newToken"));
+        sp.setReceiverId((int) reqBody.get("receiverId"));
+        sp.setReceiverPrice((int) reqBody.get("receiverPrice"));
+
+        int ret = sprinkleMapper.changeReceivers(sp);
+        return ret;
+    }
+
+    /**
+     * delete : 삭제
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping(value="deleteSprinkle/{token}")
+    public int deleteSprinkle(@PathVariable(value="token") String token) throws Exception {
+        int ret = sprinkleMapper.deleteSprinkle(token);
+        return ret;
+    }
 
 }
