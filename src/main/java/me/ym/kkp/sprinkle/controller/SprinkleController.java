@@ -3,6 +3,10 @@ package me.ym.kkp.sprinkle.controller;
 import lombok.extern.slf4j.Slf4j;
 
 import me.ym.kkp.sprinkle.TokenGenerator;
+import me.ym.kkp.sprinkle.error.exception.ExpiredException;
+import me.ym.kkp.sprinkle.error.exception.ForbiddenException;
+import me.ym.kkp.sprinkle.error.exception.InvalidValueException;
+import me.ym.kkp.sprinkle.error.exception.NotFoundException;
 import me.ym.kkp.sprinkle.model.Response;
 import me.ym.kkp.sprinkle.model.Sprinkle;
 import me.ym.kkp.sprinkle.repository.SprinkleMapper;
@@ -125,9 +129,9 @@ public class SprinkleController {
 
         if(sprinkle != null){
 
-            //todo 뿌린사람만 조회가능
+            //뿌린사람만 조회가능
             if(sprinklerId != sprinkle.getSprinklerId()){
-                throw new Exception();
+                throw new ForbiddenException("!! Unable access with userid  :");
             }
 
             //7일 동안만 조회 가능 / 7보다 크면 exception
@@ -138,8 +142,8 @@ public class SprinkleController {
             calDateDays = Math.abs(calDateDays);
 
             if (calDateDays > 7) {
-                //todo 조회기간 지남
-                throw new Exception();
+                //조회기간 지남
+                throw new InvalidValueException("!! Invalid value");
             }
 
             //뿌린 시각, 뿌린 금액, 받기 완료된 금액
@@ -153,8 +157,8 @@ public class SprinkleController {
             map.put("receiverTotList", receiverList);
 
         }else{
-            //todo 유효한 토큰이 아님
-            throw new Exception();
+            //유효한 토큰이 아님
+            throw new InvalidValueException("!! Invalid token : "+ token);
         }
 
         return map;
@@ -182,7 +186,7 @@ public class SprinkleController {
         int ret = sprinkleService.cancleSprinkle(sp);
 
         if(ret == 0){                   // insert, update, delete에는 resultType이 없고 row 개수 반환하는데 수정 할수 있는 조건이 없을 경우
-            throw new Exception();      //todo 잘못된 sprinklerId 전송
+            throw new InvalidValueException(" InvalidValueException : wrong sprinklerId" + sprinklerId);      //잘못된 sprinklerId 전송
         }
 
         Map<String, Object> resultData = new HashMap<>();

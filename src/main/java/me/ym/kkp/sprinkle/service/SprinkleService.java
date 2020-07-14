@@ -1,12 +1,17 @@
 package me.ym.kkp.sprinkle.service;
 
 import lombok.extern.slf4j.Slf4j;
+
+import me.ym.kkp.sprinkle.error.exception.ExpiredException;
+import me.ym.kkp.sprinkle.error.exception.ForbiddenException;
+import me.ym.kkp.sprinkle.error.exception.InvalidValueException;
 import me.ym.kkp.sprinkle.model.Sprinkle;
 import me.ym.kkp.sprinkle.repository.SprinkleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -25,19 +30,15 @@ public class SprinkleService {
     public List<HashMap<String,Object>> selectMyReceiver(String token) {
         return sprinkleMapper.selectMyReceiver(token);
     }
-/*
-    public void insertSprinkle(Sprinkle sprinkle){
-        sprinkleMapper.insertSprinkle(sprinkle);
-    }
-*/
+
     //랜덤금액 생성
-    public int makeRandomReceivePrice(Sprinkle sprinkle) throws Exception{
+    public int makeRandomReceivePrice(Sprinkle sprinkle) throws ParseException {
         int returnPrice=0;
 
         HashMap<String,Object> retmap = sprinkleMapper.selectSprinkleTotPrice(sprinkle);
 
         if(retmap == null){
-            throw new Exception();      //todo 잘못된 토큰 전송
+            throw new InvalidValueException("!! Invalid token : " + sprinkle.getToken());      //잘못된 토큰 전송
         }
 
         //만료시간
@@ -55,15 +56,15 @@ public class SprinkleService {
         if(difference > 0){
 //            System.out.println("(curtime)부터 (getValidTime)까지 " + difference +"초가 지났습니다");
             // 1일 = 24 * 60 * 60
-            throw new Exception(); //todo 받기한 시간이 유효 토큰 만료시간 초과
+            throw new ExpiredException("!! Expired token : "+ (String) retmap.get("token")); //받기한 시간이 유효 토큰 만료시간 초과
         }
 
         if(retmap.get("sprinklerId").equals(sprinkle.getReceiverId())){
-            throw new Exception();  //todo 자신이 뿌린 건은 받기 불가
+            throw new ForbiddenException("!! Unable access with userid : " + retmap.get("sprinklerId"));  //자신이 뿌린 건은 받기 불가
         }
 
         if(!"0".equals(String.valueOf(retmap.get("myIdCnt")))){
-            throw new Exception();  //todo 이미 받은 적이 있는 유저일 경우 받기 불가
+            throw new ForbiddenException("!! Only accessible once : " + sprinkle.getReceiverId());  //이미 받은 적이 있는 유저일 경우 받기 불가
         }
 
         String tempSprinklerPrice = String.valueOf(retmap.get("sprinklerPrice"));        //뿌린 금액
@@ -79,7 +80,7 @@ public class SprinkleService {
         int receiverRealCnt = Integer.parseInt(tempReceiverRealCnt);
 
         if(sprinklerPrice <= receiverTotPrice){
-            throw new Exception();      //todo 받을 수 있는 금액과 인원이 이미 초과
+            throw new ForbiddenException("!! Unable access");      //받을 수 있는 금액과 인원이 이미 초과
         }else{
             if(receiverCnt == receiverRealCnt+1) {       //마지막으로 받기 가능한 자일 경우 남은 금액
                 returnPrice = price;
