@@ -93,7 +93,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.4.1</version>
+            <version>4.5.13</version>
         </dependency>
 
         <!--빈번한 변경으로 인한 개발상의 번거로움(서버 재가동, 사이트 확인시 reload)을 줄여주는 개발 환경 개선 도구. -->
